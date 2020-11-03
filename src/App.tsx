@@ -12,7 +12,7 @@ export type TasksType = {
     isDone: boolean
 }
 
-type TodoListType = {
+export type TodoListType = {
     id: string
     title: string
     filter: FiltersValuesType
@@ -58,7 +58,7 @@ function App() {
         const todoList = tasks[todoListID]
         tasks[todoListID] = todoList.filter(t => t.id !== taskID)
         setTasks({...tasks})
-    };
+    }
 
     function changeTaskStatus(taskID: string, isDone: boolean, todoListID: string) {
         const todoList = tasks[todoListID]
