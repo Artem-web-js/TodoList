@@ -1,6 +1,6 @@
 import {TasksStateType, TasksType} from "../App";
 import {v1} from "uuid";
-import {AddTodolistActionType} from "./todo-list-reducer";
+import {AddTodolistActionType, RemoveTodolistActionType} from "./todo-list-reducer";
 
 export type RemoveTaskActionType = {
     type: "REMOVE-TASK"
@@ -24,14 +24,13 @@ export type ChangeTaskTitleActionType = {
     title: string
     todolistID: string
 }
-export type RemoveTodolistActionType = {
-    type: "REMOVE-TODOLIST"
-    todolistID: string
-}
+
+
+let initialState: TasksStateType = {}
 
 type ActionType = RemoveTaskActionType | AddTaskActionType | ChangeTaskStatusActionType | ChangeTaskTitleActionType | AddTodolistActionType | RemoveTodolistActionType
 
-export const tasksReducer = (state: TasksStateType, action: ActionType): TasksStateType => {
+export const tasksReducer = (state= initialState, action: ActionType): TasksStateType => {
     switch (action.type) {
         case "REMOVE-TASK": {
             const stateCopy = {...state}
@@ -75,11 +74,11 @@ export const tasksReducer = (state: TasksStateType, action: ActionType): TasksSt
         }
         case "REMOVE-TODOLIST": {
             const stateCopy = {...state}
-            delete stateCopy[action.todolistID]
+            delete stateCopy[action.id]
             return stateCopy
         }
         default:
-            throw new Error("I don't understand this type")
+            return state
     }
 }
 
@@ -87,5 +86,4 @@ export const removeTaskAC = (taskID: string, todolistID: string): RemoveTaskActi
 export const addTaskAC = (title: string, todolistID: string): AddTaskActionType => ({type: "ADD-TASK", title, todolistID})
 export const changeTaskStatusAC = (taskID: string, isDone: boolean, todolistID: string): ChangeTaskStatusActionType => ({type: "CHANGE-TASK-STATUS", taskID, isDone, todolistID})
 export const changeTaskTitleAC = (taskID: string, title: string, todolistID: string): ChangeTaskTitleActionType => ({type: "CHANGE-TASK-TITLE", taskID, title, todolistID})
-export const addTodolistAC = (title: string): AddTodolistActionType => ({type: "ADD-TODOLIST", title, id: v1()})
-export const removeTodolistAC = (todolistID: string): RemoveTodolistActionType => ({type: "REMOVE-TODOLIST", todolistID})
+

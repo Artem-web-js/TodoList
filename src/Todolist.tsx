@@ -20,8 +20,8 @@ type PropsTodolist = {
     changeTodoListTitle: (todoListID: string, title: string) => void
 }
 
-export function Todolist(props: PropsTodolist) {
-
+export const Todolist = React.memo((props: PropsTodolist) => {
+    console.log('Todolist called!')
     // const [title, setTitle] = useState<string>("")
     // let [error, setError] = useState<string | null>(null)
 
@@ -46,24 +46,6 @@ export function Todolist(props: PropsTodolist) {
         )
     });
 
-    /*const onAddTaskClick = () => {
-        if(title.trim()) {
-            props.addTask(title.trim(), props.id)
-            setTitle("")
-        } else {
-            setError("Title is required!")
-        }
-    }*/
-
-    // const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {setTitle(e.currentTarget.value)}
-
-    /*const onAddTaskKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-        setError(null)
-        if(e.key === "Enter") {
-            onAddTaskClick()
-        }
-    }*/
-
     const addTask = (title: string) => {
         props.addTask(title, props.id)
     }
@@ -73,7 +55,6 @@ export function Todolist(props: PropsTodolist) {
     const removeTodoList = () => {
         props.removeTodoList(props.id)
     }
-
     const onSetAllFilterClick = () => {
         props.changeFilter("all", props.id)
     }
@@ -82,6 +63,14 @@ export function Todolist(props: PropsTodolist) {
     }
     const onSetCompletedFilterClick = () => {
         props.changeFilter("completed", props.id)
+    }
+
+    let tasksForTodoList = props.tasks;
+    if (props.filter === "active") {
+        tasksForTodoList = props.tasks.filter(t => !t.isDone)
+    }
+    if (props.filter === "completed") {
+        tasksForTodoList = props.tasks.filter(t => t.isDone)
     }
 
     return (
@@ -95,7 +84,9 @@ export function Todolist(props: PropsTodolist) {
             <AddItemForm addItem={addTask}/>
 
             <div>
-                {tasks}
+                {
+                    tasksForTodoList.map(t => {})
+                }
             </div>
             <div>
                 <Button
@@ -113,4 +104,4 @@ export function Todolist(props: PropsTodolist) {
             </div>
         </div>
     )
-}
+})
