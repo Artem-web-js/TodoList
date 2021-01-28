@@ -119,10 +119,10 @@ function AppWithReducer() {
                                             addTask={addTask}
                                             removeTask={removeTask}
                                             changeFilter={changeFilter}
-                                            removeTodoList={removeTodoList}
+                                            removeTodolist={removeTodoList}
                                             changeTaskTitle={changeTaskTitle}
                                             changeTaskStatus={changeTaskStatus}
-                                            changeTodoListTitle={changeTodoListTitle}
+                                            changeTodolistTitle={changeTodoListTitle}
                                         />
                                     </Paper>
                                 </Grid>
