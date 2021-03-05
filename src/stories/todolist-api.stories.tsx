@@ -9,8 +9,6 @@ export default {
 export const GetTodolists = () => {
     const [state, setState] = useState<any>(null)
     useEffect(() => {
-        // здесь мы будем делать запрос и ответ закидывать в стейт.
-        // который в виде строки будем отображать в div-ке
         todolistsAPI.getTodolists()
             .then((res) => {
                 setState(res.data)
@@ -22,7 +20,8 @@ export const GetTodolists = () => {
 export const CreateTodolist = () => {
     const [state, setState] = useState<any>(null)
     useEffect(() => {
-        todolistsAPI.createTodolis()
+        let title = "Learn JavaScript";
+        todolistsAPI.createTodolis(title)
             .then((res) => {
                 setState(res.data)
             })
@@ -46,7 +45,8 @@ export const UpdateTodolistTitle = () => {
     const [state, setState] = useState<any>(null)
     useEffect(() => {
         let todolistId = "7b89923a-b49d-426d-b2fb-cc5fad63b0bd";
-        todolistsAPI.updateTodolistTitle(todolistId)
+        let title = "Param";
+        todolistsAPI.updateTodolistTitle(todolistId, title)
             .then((res) => {
                 setState(res.data)
             })
