@@ -1,38 +1,52 @@
 import axios from "axios";
 
-const settings = {
+const instance = axios.create({
+    baseURL: "https://social-network.samuraijs.com/api/1.1/",
     withCredentials: true,
     headers: {
         "API-KEY": "9e4686de-4379-4e75-89bc-e99abdd3cdc3"
     }
+})
+
+type TasksResponseType = {
+    items: TaskType[]
+    totalCount: number
+    error: null | string
 }
 
-/*type TodolistResponseType<T = {}> = {
-    resultCode: number
-    messages: Array<string>
-    data: {
-        item: T
-    }
-}
-
-export type TodolistType = {
+export type TaskType = {
     id: string
     title: string
-    addedData: string
+    description: null | string
+    todoListId: string
     order: number
+    status: number
+    priority: number
+    startDate: null | string
+    deadline: null | string
+    addedDate: string
+}
+
+/*export type UpdateTaskType = {
+    title: string
+    description: null | string
+    status: number
+    priority: number
+    startDate: null | string
+    deadline: null | string
 }*/
 
 export const tasksAPI = {
     getTasks(todolistId: string) {
-        return axios.get(`https://social-network.samuraijs.com/api/1.1/todo-lists/${todolistId}/tasks`, settings)
+        return instance.get<TasksResponseType>(`todo-lists/${todolistId}/tasks`)
     },
     createTask(todolistId: string, title: string) {
-        return axios.post(`https://social-network.samuraijs.com/api/1.1/todo-lists/${todolistId}/tasks`, {title: title}, settings)
+        return instance.post<TaskType>(`todo-lists/${todolistId}/tasks`, {title: title})
     },
     deleteTask(todolistId: string, taskId: string) {
-        return axios.delete(`https://social-network.samuraijs.com/api/1.1/todo-lists/${todolistId}/tasks/${taskId}`, settings)
+        return instance.delete<TaskType>(`todo-lists/${todolistId}/tasks/${taskId}`)
     },
     updateTaskTitle(todolistId: string, taskId: string, title: string) {
-        return axios.put(`https://social-network.samuraijs.com/api/1.1/todo-lists/${todolistId}/tasks/${taskId}`, {title: title}, settings)
+        return instance.put<TaskType>(`todo-lists/${todolistId}/tasks/${taskId}`, {title: title})
     }
 }

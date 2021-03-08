@@ -8,7 +8,7 @@ export default {
 export const GetTasks = () => {
     const [state, setState] = useState<any>(null)
     useEffect(() => {
-        let todolistId = "7b89923a-b49d-426d-b2fb-cc5fad63b0bd";
+        let todolistId = "d98aac03-71ab-4589-8171-7915b4a9e8db";
         tasksAPI.getTasks(todolistId)
             .then((res) => {
                 setState(res.data)
@@ -33,11 +33,11 @@ export const CreateTask = () => {
 export const DeleteTask = () => {
     const [state, setState] = useState<any>(null)
     useEffect(() => {
-        let todolistId = "0ca80ad7-7bc7-4388-a011-ebca291eb527"
-        let taskId = "";
+        let todolistId = "d98aac03-71ab-4589-8171-7915b4a9e8db"
+        let taskId = "a5ba4a3f-bd47-4521-8850-f10b1254c03a";
         tasksAPI.deleteTask(todolistId, taskId)
             .then((res) => {
-                setState(res.data.items)
+                setState(res.data)
             })
     }, [])
 
@@ -46,9 +46,9 @@ export const DeleteTask = () => {
 export const UpdateTaskTitle = () => {
     const [state, setState] = useState<any>(null)
     useEffect(() => {
-        let todolistId = "7b89923a-b49d-426d-b2fb-cc5fad63b0bd";
-        let taskId = "";
-        let title = "Param";
+        let todolistId = "d98aac03-71ab-4589-8171-7915b4a9e8db";
+        let taskId = "bab94e66-10c2-4d03-9438-13d951228324";
+        let title = "I'm so happy!";
         tasksAPI.updateTaskTitle(todolistId, taskId, title)
             .then((res) => {
                 setState(res.data)
