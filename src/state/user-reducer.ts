@@ -1,5 +1,3 @@
-import {FiltersValuesType} from "../App";
-
 type StateType = {
     name: string
     age: number

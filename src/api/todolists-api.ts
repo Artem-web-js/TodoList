@@ -19,8 +19,8 @@ type TodolistResponseType<T = {}> = {
 export type TodolistType = {
     id: string
     title: string
-    addedData: string
-    order: number
+    addedData?: string
+    order?: number
 }
 
 export const todolistsAPI = {
