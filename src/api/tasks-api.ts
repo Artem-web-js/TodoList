@@ -1,4 +1,5 @@
 import axios from "axios";
+import {UpdateDomainTaskType} from "../state/tasks-reducer";
 
 const instance = axios.create({
     baseURL: "https://social-network.samuraijs.com/api/1.1/",
@@ -42,14 +43,14 @@ export type TaskType = {
     addedDate: string
 }
 
-/*export type UpdateTaskType = {
+export type UpdateTaskType = {
     title: string
-    description: null | string
-    status: number
-    priority: number
-    startDate: null | string
-    deadline: null | string
-}*/
+    description: string
+    status: TaskStatuses
+    priority: TaskPriorities
+    startDate: string
+    deadline: string
+}
 
 export const tasksAPI = {
     getTasks(todolistId: string) {
@@ -61,7 +62,7 @@ export const tasksAPI = {
     deleteTask(todolistId: string, taskId: string) {
         return instance.delete<TaskType>(`todo-lists/${todolistId}/tasks/${taskId}`)
     },
-    updateTaskTitle(todolistId: string, taskId: string, title: string) {
-        return instance.put<TaskType>(`todo-lists/${todolistId}/tasks/${taskId}`, {title: title})
+    updateTask(todolistId: string, taskId: string, model: UpdateDomainTaskType) {
+        return instance.put<TaskType>(`todo-lists/${todolistId}/tasks/${taskId}`, model)
     }
 }
