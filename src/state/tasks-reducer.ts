@@ -1,6 +1,6 @@
 import {TasksStateType} from "../App";
 import {AddTodolistActionType, RemoveTodolistActionType, SetTodolistsActionType} from "./todolist-reducer";
-import {TaskStatuses, TaskType, tasksAPI, TaskPriorities} from "../api/tasks-api";
+import {TaskPriorities, tasksAPI, TaskStatuses, TaskType, UpdateTaskModelType} from "../api/tasks-api";
 import {ThunkAction} from "redux-thunk";
 import {AppRootStateType} from "./store";
 
@@ -17,7 +17,7 @@ export type UpdateTaskActionType = {
     type: "UPDATE-TASK"
     taskID: string
     todolistID: string
-    model: UpdateDomainTaskType
+    model: UpdateDomainTaskModelType
 }
 export type ChangeTaskTitleActionType = {
     type: "CHANGE-TASK-TITLE"
@@ -51,11 +51,7 @@ export const tasksReducer = (state = initialState, action: ActionType): TasksSta
             return stateCopy
         }
         case 'ADD-TASK': {
-            const stateCopy = {...state}
-            const tasks = stateCopy[action.task.todoListId];
-            const newTasks = [action.task, ...tasks];
-            stateCopy[action.task.todoListId] = newTasks;
-            return stateCopy;
+            return {...state, [action.task.todoListId]: [action.task, ...state[action.task.todoListId]]}
         }
 
         case "UPDATE-TASK": {
@@ -116,7 +112,7 @@ export const addTaskAC = (task: TaskType): AddTaskActionType => ({
     type: "ADD-TASK",
     task
 })
-export const updateTaskAC = (taskID: string, model: UpdateDomainTaskType, todolistID: string): UpdateTaskActionType => ({
+export const updateTaskAC = (taskID: string, model: UpdateDomainTaskModelType, todolistID: string): UpdateTaskActionType => ({
     type: "UPDATE-TASK",
     taskID,
     model,
@@ -158,47 +154,43 @@ export const removeTaskTC = (taskId: string, todolistId: string): ThunkType => (
 export const addTaskTC = (title: string, todolistId: string): ThunkType => (dispatch) => {
     tasksAPI.createTask(todolistId, title)
         .then((res) => {
-            const action = addTaskAC(res.data)
+            const action = addTaskAC(res.data.data.item)
             dispatch(action)
         })
 }
 
-export type UpdateDomainTaskType = {
-    title?: string
-    description?: string | null
-    status?: TaskStatuses
-    priority?: TaskPriorities
-    startDate?: string | null
-    deadline?: string | null
-}
-
-export const updateTaskTC = (taskId: string, todolistId: string, domainModel: UpdateDomainTaskType): ThunkType => {
-    return (dispatch, getState: () => AppRootStateType) => {
-        const allTasksFromState = getState().tasks;
-        const tasksForCurrentTodolist = allTasksFromState[todolistId]
-        const task = tasksForCurrentTodolist.find(t => {
-            return t.id === taskId
-        })
-
-        if(!task) {
+export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string): ThunkType =>
+    (dispatch, getState: () => AppRootStateType) => {
+        const state = getState()
+        const task = state.tasks[todolistId].find(t => t.id === taskId)
+        if (!task) {
             console.warn('task not found in the state')
             return
         }
 
-        const apiModel: UpdateDomainTaskType = {
-            title: task.title,
-            startDate: task.startDate,
-            priority: task.priority,
-            description: task.description,
+        const apiModel: UpdateTaskModelType = {
             deadline: task.deadline,
+            description: task.description,
+            priority: task.priority,
+            startDate: task.startDate,
+            title: task.title,
             status: task.status,
             ...domainModel
         }
 
-        tasksAPI.updateTask(todolistId, taskId, apiModel).then(() => {
-            const action = updateTaskAC(taskId, domainModel, todolistId)
-            dispatch(action)
-        })
+        tasksAPI.updateTask(todolistId, taskId, apiModel)
+            .then(() => {
+                dispatch(updateTaskAC(taskId, domainModel, todolistId))
+            })
     }
+
+// types
+export type UpdateDomainTaskModelType = {
+    title?: string
+    description?: string
+    status?: TaskStatuses
+    priority?: TaskPriorities
+    startDate?: string
+    deadline?: string
 }
 

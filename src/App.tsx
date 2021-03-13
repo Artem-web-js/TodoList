@@ -41,11 +41,11 @@ function App() {
     }, [dispatch])
 
     const changeStatus = useCallback((id: string, status: TaskStatuses, todolistId: string) => {
-        dispatch(updateTaskTC(id, todolistId, {status}));
+        dispatch(updateTaskTC(id, {status}, todolistId));
     }, [dispatch])
 
     const changeTaskTitle = useCallback((id: string, title: string, todolistId: string) => {
-        dispatch(updateTaskTC(id, todolistId, {title}));
+        dispatch(updateTaskTC(id, {title}, todolistId));
     }, [dispatch])
 
     const changeFilter = useCallback((value: FilterValuesType, todolistId: string) => {
@@ -64,7 +64,6 @@ function App() {
     const addTodolist = useCallback((title: string) => {
         dispatch(addTodolistTC(title))
     }, [dispatch])
-
     return (
         <div className="App">
             <AppBar position="static">
