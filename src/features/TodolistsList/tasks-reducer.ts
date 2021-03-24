@@ -3,7 +3,7 @@ import {TaskPriorities, tasksAPI, TaskStatuses, TaskType, UpdateTaskModelType} f
 import {ThunkAction} from "redux-thunk";
 import {AppRootStateType} from "../../app/store";
 import {Dispatch} from "redux";
-import {setAppStatusAC, SetAppStatusType} from "../../app/app-reducer";
+import {setAppStatusAC, SetAppStatusType, setAppErrorAC, SetAppErrorType} from "../../app/app-reducer";
 
 let initialState: TasksStateType = {}
 
@@ -80,9 +80,18 @@ export const addTaskTC = (title: string, todolistId: string): ThunkType => (disp
     dispatch(setAppStatusAC('loading'))
     tasksAPI.createTask(todolistId, title)
         .then((res) => {
-            const action = addTaskAC(res.data.data.item)
-            dispatch(action)
-            dispatch(setAppStatusAC('succeeded'))
+            if (res.data.resultCode === 0) {
+                const task = res.data.data.item
+                dispatch(addTaskAC(task))
+                dispatch(setAppStatusAC('succeeded'))
+            } else {
+                if (res.data.messages.length) {
+                    dispatch(setAppErrorAC(res.data.messages[0]))
+                } else {
+                    dispatch(setAppErrorAC('Some error occurred'))
+                }
+                dispatch(setAppStatusAC('failed'))
+            }
         })
 }
 export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string): ThunkType =>
@@ -133,6 +142,7 @@ type ActionType = ReturnType<typeof removeTaskAC>
     | RemoveTodolistActionType
     | SetTodolistsActionType
     | SetAppStatusType
+    | SetAppErrorType
 
 //thunks Type
 type ThunkType = ThunkAction<void, AppRootStateType, unknown, ActionType>
