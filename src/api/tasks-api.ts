@@ -35,6 +35,11 @@ export type ResponseType<D = {}> = {
     messages: Array<string>
     data: D
 }
+export enum ResultCodeStatuses {
+    Success = 0,
+    Error = 1,
+    Captcha = 10
+}
 export enum TaskStatuses {
     New = 0,
     InProgress = 1,
