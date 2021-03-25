@@ -11,6 +11,7 @@ import {ThunkAction} from "redux-thunk";
 import {AppRootStateType} from "../../app/store";
 import {Dispatch} from "redux";
 import {setAppStatusAC, SetAppStatusType, setAppErrorAC, SetAppErrorType} from "../../app/app-reducer";
+import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
 
 let initialState: TasksStateType = {}
 
@@ -87,15 +88,11 @@ export const addTaskTC = (title: string, todolistId: string): ThunkType => async
             const task = res.data.data.item
             dispatch(addTaskAC(task))
             dispatch(setAppStatusAC('succeeded'))
+        } else {
+            handleServerAppError(res.data, dispatch);
         }
     } catch (err) {
-        if (err.data.messages.length) {
-            dispatch(setAppErrorAC(err.data.messages[0]))
-        } else {
-            dispatch(setAppErrorAC('Some error occurred'))
-        }
-    } finally {
-        dispatch(setAppStatusAC('failed'))
+        handleServerNetworkError(err, dispatch)
     }
 }
 export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string): ThunkType =>
@@ -117,10 +114,18 @@ export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelT
             status: task.status,
             ...domainModel
         }
+        try {
+            await tasksAPI.updateTask(todolistId, taskId, apiModel)
+            dispatch(updateTaskAC(taskId, domainModel, todolistId))
+            dispatch(setAppStatusAC('succeeded'))
+        } catch (err) {
+            if (err.data.messages.length) {
+                dispatch(setAppErrorAC(err.data.messages[0]))
+            } else {
+                dispatch(setAppErrorAC('Some error occurred'))
+            }
+        }
 
-        await tasksAPI.updateTask(todolistId, taskId, apiModel)
-        dispatch(updateTaskAC(taskId, domainModel, todolistId))
-        dispatch(setAppStatusAC('succeeded'))
     }
 
 // types

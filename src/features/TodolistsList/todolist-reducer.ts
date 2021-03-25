@@ -3,13 +3,13 @@ import {ThunkAction} from "redux-thunk";
 import {AppRootStateType} from "../../app/store";
 import {
     RequestStatusType,
-    setAppErrorAC,
     SetAppErrorType,
     setAppStatusAC,
     SetAppStatusType
 } from "../../app/app-reducer";
 import {Dispatch} from "redux";
 import {ResultCodeStatuses} from "../../api/tasks-api";
+import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
 
 const initialState: Array<TodolistDomainType> = []
 
@@ -18,7 +18,12 @@ export const todolistReducer = (state = initialState, action: ActionType): Array
         case "REMOVE-TODOLIST":
             return state.filter(tl => tl.id !== action.id)
         case "ADD-TODOLIST":
-            return [{id: action.todolist.id, title: action.todolist.title, filter: "all", entityStatus: "idle"}, ...state]
+            return [{
+                id: action.todolist.id,
+                title: action.todolist.title,
+                filter: "all",
+                entityStatus: "idle"
+            }, ...state]
         case "CHANGE-TODOLIST-TITLE":
             return state.map(tl => tl.id === action.id ? {...tl, title: action.title} : tl)
         case "CHANGE-TODOLIST-FILTER":
@@ -26,7 +31,7 @@ export const todolistReducer = (state = initialState, action: ActionType): Array
         case "SET-TODOLISTS":
             return action.todolists.map(tl => ({...tl, filter: "all", entityStatus: "idle"}))
         case "CHANGE-TODOLIST-ENTITY-STATUS":
-            return state.map(tl => tl.id === action.todolistId ? {...tl, entityStatus: action.entityStatus}: tl)
+            return state.map(tl => tl.id === action.todolistId ? {...tl, entityStatus: action.entityStatus} : tl)
         default:
             return state
     }
@@ -44,7 +49,8 @@ export const changeTodoListFilterAC = (filter: FilterValuesType, id: string) =>
 export const setTodolistsAC = (todolists: Array<TodolistType>) =>
     ({type: 'SET-TODOLISTS', todolists} as const)
 export const changeTodolistEntityStatusAC = (todolistId: string, entityStatus: RequestStatusType) => ({
-    type: 'CHANGE-TODOLIST-ENTITY-STATUS', todolistId, entityStatus} as const)
+    type: 'CHANGE-TODOLIST-ENTITY-STATUS', todolistId, entityStatus
+} as const)
 
 //thunks
 export const fetchTodolistsThunk = (): ThunkType => {
@@ -64,16 +70,11 @@ export const addTodolistTC = (title: string): ThunkType => {
             if (res.data.resultCode === ResultCodeStatuses.Success) {
                 dispatch(addTodoListAC(res.data.data.item));
                 dispatch(setAppStatusAC('succeeded'))
+            } else {
+                handleServerAppError(res.data, dispatch);
             }
         } catch (err) {
-            if (err.data.messages.length) {
-                dispatch(setAppErrorAC(err.data.messages[0]))
-            } else {
-                dispatch(setAppErrorAC('Some error occurred'))
-            }
-        } finally {
-            dispatch(setAppStatusAC('failed'))
-
+            handleServerNetworkError(err, dispatch)
         }
     }
 }

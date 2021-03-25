@@ -24,7 +24,7 @@ export const todolistsAPI = {
 }
 
 //types
-type TodolistResponseType<T = {}> = {
+export type TodolistResponseType<T = {}> = {
     resultCode: number
     messages: Array<string>
     data: T
