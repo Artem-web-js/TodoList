@@ -8,6 +8,7 @@ import {TaskStatuses, TaskType} from "../../../api/tasks-api";
 import {FilterValuesType} from "../todolist-reducer";
 import {useDispatch} from "react-redux";
 import { fetchTasksTC } from '../tasks-reducer';
+import {RequestStatusType} from "../../../app/app-reducer";
 
 type PropsType = {
     id: string
@@ -21,6 +22,7 @@ type PropsType = {
     changeTodolistTitle: (id: string, newTitle: string) => void
     filter: FilterValuesType
     changeTaskTitle: (taskId: string, newTitle: string, todolistId: string) => void
+    entityStatus: RequestStatusType
 }
 
 export const Todolist = React.memo((props: PropsType) => {
@@ -56,11 +58,11 @@ export const Todolist = React.memo((props: PropsType) => {
 
     return <div>
         <h3><EditableSpan value={props.title} onChange={changeTodolistTitle}/>
-            <IconButton onClick={removeTodolist}>
+            <IconButton onClick={removeTodolist} disabled={props.entityStatus === 'loading'}>
                 <Delete/>
             </IconButton>
         </h3>
-        <AddItemForm addItem={addTask}/>
+        <AddItemForm addItem={addTask} entityStatus={props.entityStatus}/>
         <div>
             {
                 tasksForTodolist.map(t => <Task
