@@ -7,6 +7,8 @@ import {useSelector} from "react-redux";
 import {AppRootStateType} from "./store";
 import {RequestStatusType} from "./app-reducer";
 import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
+import { Route, Switch, Redirect } from 'react-router-dom';
+import {Login} from "../features/Login/Login";
 
 function App() {
 
@@ -28,7 +30,12 @@ function App() {
                 {status === "loading" && <LinearProgress color="secondary"/>}
             </AppBar>
             <Container fixed>
-                <TodolistsList/>
+                <Switch>
+                    <Route exact path={'/'} render={() => <TodolistsList/>}/>
+                    <Route path={'/login'} render={() => <Login/>}/>
+                    <Route path={'/404'} render={() => <h1>404: PAGE NOT FOUND</h1>}/>
+                    <Redirect from={'*'} to={'/404'}/>
+                </Switch>
             </Container>
         </div>
     );

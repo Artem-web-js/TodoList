@@ -87,12 +87,13 @@ export const addTaskTC = (title: string, todolistId: string): ThunkType => async
         if (res.data.resultCode === ResultCodeStatuses.Success) {
             const task = res.data.data.item
             dispatch(addTaskAC(task))
-            dispatch(setAppStatusAC('succeeded'))
         } else {
             handleServerAppError(res.data, dispatch);
         }
     } catch (err) {
         handleServerNetworkError(err, dispatch)
+    } finally {
+        dispatch(setAppStatusAC('succeeded'))
     }
 }
 export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string): ThunkType =>

@@ -69,12 +69,13 @@ export const addTodolistTC = (title: string): ThunkType => {
             let res = await todolistsAPI.createTodolis(title)
             if (res.data.resultCode === ResultCodeStatuses.Success) {
                 dispatch(addTodoListAC(res.data.data.item));
-                dispatch(setAppStatusAC('succeeded'))
             } else {
                 handleServerAppError(res.data, dispatch);
             }
         } catch (err) {
             handleServerNetworkError(err, dispatch)
+        } finally {
+            dispatch(setAppStatusAC('succeeded'))
         }
     }
 }
