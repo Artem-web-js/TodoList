@@ -13,13 +13,25 @@ export const todolistsAPI = {
         return instance.get<Array<TodolistType>>("todo-lists")
     },
     createTodolis(title: string) {
-        return instance.post<TodolistResponseType<{item: TodolistType }>>("todo-lists", {title: title})
+        return instance.post<TodolistResponseType<{ item: TodolistType }>>("todo-lists", {title: title})
     },
     deleteTodolist(id: string) {
         return instance.delete<TodolistResponseType>(`todo-lists/${id}`)
     },
     updateTodolistTitle(id: string, title: string) {
         return instance.put<TodolistResponseType>(`todo-lists/${id}`, {title: title})
+    }
+}
+
+export const authAPI = {
+    login(data: LoginParamsType) {
+        return instance.post<TodolistResponseType<{userId: string}>>("auth/login", data)
+    },
+    logout() {
+      return instance.delete<TodolistResponseType>("auth/login")
+    },
+    me() {
+        return instance.get<TodolistResponseType<{id: number, email: string, login: string}>>('auth/me')
     }
 }
 
@@ -34,4 +46,11 @@ export type TodolistType = {
     title: string
     addedData?: string
     order?: number
+}
+
+export type LoginParamsType = {
+    email: string
+    password: string
+    rememberMe?: boolean
+    captcha?: boolean
 }
