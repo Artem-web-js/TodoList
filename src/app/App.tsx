@@ -1,6 +1,15 @@
 import React, {useEffect} from 'react';
 import './App.css';
-import {AppBar, Button, Container, IconButton, LinearProgress, Toolbar, Typography, CircularProgress} from '@material-ui/core';
+import {
+    AppBar,
+    Button,
+    CircularProgress,
+    Container,
+    IconButton,
+    LinearProgress,
+    Toolbar,
+    Typography
+} from '@material-ui/core';
 import {Menu} from '@material-ui/icons';
 import {TodolistsList} from "../features/TodolistsList/TodolistsList";
 import {useDispatch, useSelector} from "react-redux";
