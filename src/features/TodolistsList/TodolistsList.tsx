@@ -18,8 +18,11 @@ import {Todolist} from "./Todolist/Todolist";
 import {Redirect} from "react-router-dom";
 
 export const TodolistsList = () => {
+    // @ts-ignore
     const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists)
+    // @ts-ignore
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
+    // @ts-ignore
     const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
     const dispatch = useDispatch();
 
@@ -28,7 +31,7 @@ export const TodolistsList = () => {
             return
         }
         dispatch(fetchTodolistsThunk())
-    }, [])
+    }, [dispatch, isLoggedIn])
 
     const removeTask = useCallback((taskId: string, todolistId: string) => {
         dispatch(removeTaskTC(taskId, todolistId))
@@ -47,7 +50,7 @@ export const TodolistsList = () => {
     }, [dispatch])
 
     const changeFilter = useCallback((value: FilterValuesType, todolistId: string) => {
-        const action = changeTodoListFilterAC(value, todolistId);
+        const action = changeTodoListFilterAC({filter: value, id: todolistId});
         dispatch(action);
     }, [dispatch])
 
@@ -73,7 +76,7 @@ export const TodolistsList = () => {
         </Grid>
         <Grid container spacing={3}>
             {
-                todolists.map(tl => {
+                todolists.map((tl: TodolistDomainType) => {
                     let tasksForTodolist = tasks[tl.id];
 
                     return <Grid item key={tl.id}>

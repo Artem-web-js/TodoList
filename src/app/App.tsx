@@ -22,14 +22,17 @@ import {logoutTC} from "../features/Login/auth-reducer";
 
 function App() {
 
+    // @ts-ignore
     const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status)
+    // @ts-ignore
     const isInitialized = useSelector<AppRootStateType, boolean>(state => state.app.isInitialized)
+    // @ts-ignore
     const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(initializeAppTC())
-    }, [])
+    }, [dispatch])
 
     const logout = () => {
         dispatch(logoutTC())

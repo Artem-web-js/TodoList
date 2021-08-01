@@ -11,6 +11,7 @@ export type TaskPropsType = {
     task: TaskType
     todolistId: string
 }
+
 export const Task = React.memo((props: TaskPropsType) => {
     const onClickHandler = () => props.removeTask(props.task.id, props.todolistId)
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
