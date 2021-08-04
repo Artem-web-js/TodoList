@@ -10,7 +10,6 @@ function Alert(props: AlertProps) {
 }
 
 export function ErrorSnackbar() {
-    // @ts-ignore
     const error = useSelector<AppRootStateType, ErrorType>((state) => state.app.error)
     const dispatch = useDispatch()
 

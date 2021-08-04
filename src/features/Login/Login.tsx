@@ -29,7 +29,6 @@ const validate = (values: FormValuesTypes) => {
 }
 
 export const Login = () => {
-    // @ts-ignore
     const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
     const dispatch = useDispatch();
 

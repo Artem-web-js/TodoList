@@ -18,11 +18,8 @@ import {Todolist} from "./Todolist/Todolist";
 import {Redirect} from "react-router-dom";
 
 export const TodolistsList = () => {
-    // @ts-ignore
     const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists)
-    // @ts-ignore
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
-    // @ts-ignore
     const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
     const dispatch = useDispatch();
 
